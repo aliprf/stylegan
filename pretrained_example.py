@@ -53,7 +53,7 @@ def main():
     # for i in range(len(latents[0])):
         # np.expand_dims(latents[i], 0)
 
-    seeds = [1, 50]
+    seeds =  np.random.randint(1500, size=(100))
     i=0
     for seed in seeds:
         # Generate image.
