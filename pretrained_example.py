@@ -19,6 +19,9 @@ import config
 
 def main():
 
+    # latents = np.random.RandomState(5).randn(sum(3 * 2 ** lod for lod in [0, 1, 2, 2, 3, 3]), 512)
+
+
     # Initialize TensorFlow.
     tflib.init_tf()
     # Print network details.
@@ -43,15 +46,19 @@ def main():
         i += 1
         
     '''
-    rnd = np.random.RandomState(5)
-    latent = rnd.randn(1, Gs.input_shape[1])
-    print(latent.shape)
 
-    latents = np.random.RandomState(5).randn(sum(3 * 2 ** lod for lod in [0, 1, 2, 2, 3, 3]), Gs.input_shape[1])
-    print(latents.shape)
-    for i in range(len(latents[0])):
+
+    # latents = np.random.RandomState(5).randn(sum(3 * 2 ** lod for lod in [0, 1, 2, 2, 3, 3]), Gs.input_shape[1])
+    # print(latents.shape)
+    # for i in range(len(latents[0])):
+        # np.expand_dims(latents[i], 0)
+
+    seeds = [1, 50]
+    i=0
+    for seed in seeds:
         # Generate image.
-        np.expand_dims(latents[i], 0)
+        rnd = np.random.RandomState(seed)
+        latent = rnd.randn(1, Gs.input_shape[1])
         print(latent.shape)
         fmt = dict(func=tflib.convert_images_to_uint8, nchw_to_nhwc=True)
         images = Gs.run(latent, None, truncation_psi=0.7, randomize_noise=True, output_transform=fmt)
@@ -60,7 +67,7 @@ def main():
         os.makedirs(config.result_dir, exist_ok=True)
         png_filename = os.path.join(config.result_dir, 'ALI-example' + str(i) + '.png')
         PIL.Image.fromarray(images[0], 'RGB').save(png_filename)
-
+        i +=1
 
 
 
