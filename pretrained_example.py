@@ -47,13 +47,11 @@ def main():
     latent = rnd.randn(1, Gs.input_shape[1])
     print(latent.shape)
 
-
-    i = 0
     latents = np.random.RandomState(5).randn(sum(3 * 2 ** lod for lod in [0, 1, 2, 2, 3, 3]), Gs.input_shape[1])
     print(latents.shape)
     for i in range(len(latents[0])):
         # Generate image.
-        np.expand_dims(latent[i], 0)
+        np.expand_dims(latents[i], 0)
         print(latent.shape)
         fmt = dict(func=tflib.convert_images_to_uint8, nchw_to_nhwc=True)
         images = Gs.run(latent, None, truncation_psi=0.7, randomize_noise=True, output_transform=fmt)
@@ -62,7 +60,7 @@ def main():
         os.makedirs(config.result_dir, exist_ok=True)
         png_filename = os.path.join(config.result_dir, 'ALI-example' + str(i) + '.png')
         PIL.Image.fromarray(images[0], 'RGB').save(png_filename)
-        i += 1
+
 
 
 
