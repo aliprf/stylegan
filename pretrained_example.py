@@ -8,18 +8,18 @@
 """Minimal script for generating an image using pre-trained StyleGAN generator."""
 
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 import pickle
 import numpy as np
 import PIL.Image
+
 import dnnlib
 import dnnlib.tflib as tflib
 import config
 
 def main():
     # Initialize TensorFlow.
-    tflib.init_tf()
+    # tflib.init_tf()
 
     # Load pre-trained network.
     # url = 'https://drive.google.com/uc?id=1MEGjdvVpUsu1jB4zrXZN7Y4kBBOzizDQ' # karras2019stylegan-ffhq-1024x1024.pkl
@@ -36,7 +36,9 @@ def main():
 
     # Pick latent vector.
     rnd = np.random.RandomState(5)
-    latents = rnd.randn(1, Gs.input_shape[1])
+    # latents = rnd.randn(1, Gs.input_shape[1])
+
+    latents = np.random.RandomState(5).randn(sum(3 * 2 ** lod for lod in [0,1,2,2,3,3]), Gs.input_shape[1])
 
     # Generate image.
     fmt = dict(func=tflib.convert_images_to_uint8, nchw_to_nhwc=True)
@@ -44,8 +46,11 @@ def main():
 
     # Save image.
     os.makedirs(config.result_dir, exist_ok=True)
-    png_filename = os.path.join(config.result_dir, 'example.png')
-    PIL.Image.fromarray(images[0], 'RGB').save(png_filename)
+    i =0
+    for img in images:
+        png_filename = os.path.join(config.result_dir, 'example'+str(i)+'.png')
+        PIL.Image.fromarray(images[0], 'RGB').save(png_filename)
+        i+=1
 
 if __name__ == "__main__":
     main()
