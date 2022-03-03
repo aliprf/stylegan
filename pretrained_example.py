@@ -18,6 +18,7 @@ import dnnlib.tflib as tflib
 import config
 
 def main():
+
     # Initialize TensorFlow.
     tflib.init_tf()
     # Print network details.
@@ -25,23 +26,37 @@ def main():
     _G, _D, Gs = pickle.load(file)
     Gs.print_layers()
 
+    '''
     # Pick latent vector.
     rnd = np.random.RandomState(5)
-    # latents = rnd.randn(1, Gs.input_shape[1])
-
-    latents = np.random.RandomState(5).randn(sum(3 * 2 ** lod for lod in [0,1,2,2,3,3]), Gs.input_shape[1])
+    latents = rnd.randn(1, Gs.input_shape[1])
 
     # Generate image.
     fmt = dict(func=tflib.convert_images_to_uint8, nchw_to_nhwc=True)
     images = Gs.run(latents, None, truncation_psi=0.7, randomize_noise=True, output_transform=fmt)
-
     # Save image.
     os.makedirs(config.result_dir, exist_ok=True)
-    i =0
+    i = 0
     for img in images:
-        png_filename = os.path.join(config.result_dir, 'example'+str(i)+'.png')
+        png_filename = os.path.join(config.result_dir, 'example' + str(i) + '.png')
         PIL.Image.fromarray(images[0], 'RGB').save(png_filename)
-        i+=1
+        i += 1
+        
+    '''
+    i = 0
+    latents = np.random.RandomState(5).randn(sum(3 * 2 ** lod for lod in [0, 1, 2, 2, 3, 3]), Gs.input_shape[1])
+    for latent in latents[0]:
+        # Generate image.
+        fmt = dict(func=tflib.convert_images_to_uint8, nchw_to_nhwc=True)
+        images = Gs.run(latent, None, truncation_psi=0.7, randomize_noise=True, output_transform=fmt)
+
+        # Save image.
+        os.makedirs(config.result_dir, exist_ok=True)
+        png_filename = os.path.join(config.result_dir, 'ALI-example' + str(i) + '.png')
+        PIL.Image.fromarray(images[0], 'RGB').save(png_filename)
+        i += 1
+
+
 
 if __name__ == "__main__":
     main()
