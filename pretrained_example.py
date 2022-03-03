@@ -43,9 +43,15 @@ def main():
         i += 1
         
     '''
+    rnd = np.random.RandomState(5)
+    latent = rnd.randn(1, Gs.input_shape[1])
+    print(latent.shape)
+
+
     i = 0
     latents = np.random.RandomState(5).randn(sum(3 * 2 ** lod for lod in [0, 1, 2, 2, 3, 3]), Gs.input_shape[1])
-    for latent in latents[0]:
+    print(latents.shape)
+    for latent in latents:
         # Generate image.
         fmt = dict(func=tflib.convert_images_to_uint8, nchw_to_nhwc=True)
         images = Gs.run(latent, None, truncation_psi=0.7, randomize_noise=True, output_transform=fmt)
